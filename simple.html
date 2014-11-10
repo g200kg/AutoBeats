@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AutoBeats</title>
+</head>
+<body>
+<script src="autobeats.js"></script>
+<script>
+window.onload=function(){
+	beats=new AutoBeats("Sample Song");
+};
+</script>
+<h1>AutoBeats Simple Sample</h1>
+
+Title : <input id="title" onchange="beats.setTitle(this.value)" value="Sample Song"></input>
+<button onclick="beats.start()">Play</button> <button onclick="beats.stop()">Stop</button>
+</body>
+</html>
