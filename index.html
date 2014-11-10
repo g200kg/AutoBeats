@@ -10,7 +10,7 @@ window.onload=function(){
 	audioctx=new AudioContext();
 	analyser=audioctx.createAnalyser();
 	analyser.connect(audioctx.destination);
-	beats=new AutoBeats(audioctx,analyser);
+	beats=new AutoBeats(null,null,audioctx,analyser);
 	Setup();
 	var dat=new Uint8Array(128);
 	var cv=document.getElementById("canvas");
