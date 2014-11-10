@@ -40,9 +40,9 @@ Combine to your Web Audio App:
 	beats = new AutoBeats("song title", 0, audiocontext, destination);
 ```
 
-Functions:
+## Functions
 
-AutoBeats(title,bpm,audioctx,destination)  
+#### AutoBeats(title,bpm,audioctx,destination)  
  constructor of AutoBeats  
 
 Parameter|Type|Description
@@ -52,22 +52,22 @@ bpm|number|Song speed (BPM). if 0, it will be automatically decided.
 audioctx|object|Web Audio API's Audio Context object. if null, will be created internally.
 destination|object|Sound output node. It will be used in conjunction with audioctx.
 
-AutoBeats.start()  
+#### AutoBeats.start()  
  Start playing.
 
-AutoBeats.stop()  
+#### AutoBeats.stop()  
  Stop playing.
 
-AutoBeats.setTitle(title)  
+#### AutoBeats.setTitle(title)  
  Update song title. Playing song will be changed.  
 
-AutoBeats.getTitle()  
+#### AutoBeats.getTitle()  
  Get current Title.
 
-AutoBeats.setBpm(bpm)  
+#### AutoBeats.setBpm(bpm)  
  Update song speed.
 
-AutoBeats.getBpm()  
+#### AutoBeats.getBpm()  
  Get current Bpm.
 
 ## DEMO
