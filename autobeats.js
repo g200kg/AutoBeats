@@ -34,7 +34,7 @@ function AutoBeats(title,bpm,audioctx,dest){
 			}
 		};
 		this.setTone=function(f,h){
-			this.Op[0].detune.value=f*24;
+			this.Op[0].detune.value=f*12;
 			this.h=h*0.01;
 		}
 	};
