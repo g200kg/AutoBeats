@@ -187,7 +187,7 @@ function AutoBeats(title,bpm,audioctx,dest){
 			}
 		}
 	};
-	this.bdo=new FMO(audioctx,this.Comp,this.delay,[25,1.,.05,2, 29,400,.01,0, 131,100,.001,0,0.5]);
+	this.bdo=new FMO(audioctx,this.Comp,this.delay,[25,.8,.05,2, 29,400,.01,0, 131,100,.001,0,0.5]);
 	this.sdo=new FMO(audioctx,this.Comp,this.delay,[213,.4,.1,0, 123,1900,.6,0, 340,800,.1,0,0.4]);
 	this.hho=new FMO(audioctx,this.Comp,this.delay,[2200,.3,.02,0, 423,3120,.5,0, 552,1800,.1,1,.7,0.6]);
 	this.o1=new OSC(audioctx,this.Comp,this.delay,{'oct':-2,'vol':0.5,'pan':0.5,'sus':.1});
