@@ -158,7 +158,7 @@ function AutoBeats(title,bpm,audioctx,dest){
 	this.Comp.connect(dest);
 	this.scrproc.onaudioprocess=function(e){
 		var ab=this.ab;
-		if(!ab.run){
+		if(!ab.ready||!ab.run){
 			ab.meas=ab.beat=0;
 			ab.cur=ab.audioctx.currentTime;
 			return;
@@ -196,4 +196,5 @@ function AutoBeats(title,bpm,audioctx,dest){
 	this.setTitle(title);
 	if(bpm)
 		this.setBpm(bpm);
+	this.ready=true;
 }
