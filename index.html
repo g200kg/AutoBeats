@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
 <title>AutoBeats</title>
 </head>
 <body style="background:#333">
 <script src="autobeats.js"></script>
 <script>
 window.onload=function(){
+	AudioContext=window.AudioContext||window.webkitAudioContext;
+	if(!AudioContext)
+		alert("Use Chrome browser.");
 	audioctx=new AudioContext();
 	analyser=audioctx.createAnalyser();
 	analyser.connect(audioctx.destination);
@@ -44,18 +48,17 @@ function Setup(){
 }
 </script>
 <div style="float:right;color:#888;background:#222;padding:5px;height:50px">
-<b>AutoBeats</b> is a auto composer.<br/> Just need a 'Title', and optionally 'BPM'.<br/>
-<a href="http://www.g200kg.com/">g200kg</a>
+<b>AutoBeats</b> is a auto composer. Just need a 'Title', and optional 'BPM'.<br/>
+Use <b>Chrome</b> browser. <a href="http://www.g200kg.com/">g200kg</a>
 </div>
 <h1 style="color:#ddd;height:50px">AutoBeats</h1>
 <div style="background:#555;color:#ccc;padding:10px;margin:5px">
 <table>
-<tr><td>Title</td><td><input id="title" value="Hello, AutoBeats." onchange="Setup()"></input></td></tr>
-<tr><td>BPM</td><td><input id="bpmauto" type="checkbox" checked onchange="Setup()"></input>auto  <input id="bpm" min="1" max="300" value="0" size="4" onchange="Setup()"></input></td></tr>
+<tr><td>Title</td><td><input id="title" value="Hello, AutoBeats." onchange="Setup()"/></td></tr>
+<tr><td>BPM</td><td><input id="bpmauto" type="checkbox" checked onchange="Setup()"/>auto  <input id="bpm" min="1" max="300" value="0" size="4" onchange="Setup()"/></td></tr>
 </table>
 <button onclick="beats.start()">Play</button> <button onclick="beats.stop()">Stop</button>
 </div>
-<canvas id="canvas" width="512" height="512" style="width:100%;height:400px">
-</div>
+<canvas id="canvas" width="512" height="512" style="width:100%;height:400px"></canvas>
 </body>
 </html>
