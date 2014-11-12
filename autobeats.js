@@ -151,7 +151,6 @@ function AutoBeats(title,bpm,audioctx,dest){
 	this.delay=audioctx.createDelay();
 	this.delayFb=audioctx.createGain();
 	this.delayFb.gain.value=0.5;
-	this.delay.delayTime.value=30/this.bpm;
 	this.delay.connect(this.Comp);
 	this.delay.connect(this.delayFb);
 	this.delayFb.connect(this.delay);
