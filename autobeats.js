@@ -30,7 +30,7 @@ function AutoBeats(title,bpm,audioctx,dest){
 				this.Gain[i].gain.cancelScheduledValues(t);
 				this.Gain[i].gain.setValueAtTime(0,t);
 				this.Gain[i].gain.linearRampToValueAtTime(this.v[i],t+0.005);
-				this.Gain[i].gain.linearRampToValueAtTime(0,t+0.006+this.h*0.1);
+				this.Gain[i].gain.linearRampToValueAtTime(0,t+0.006+this.h*0.075);
 			}
 		};
 		this.setTone=function(f,h){
