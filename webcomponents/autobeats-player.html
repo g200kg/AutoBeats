@@ -45,6 +45,7 @@
 				this.autobeats=new AutoBeats(this.title,this.bpm);
 				this.$.playbtn.addEventListener("click",this.play.bind(this));
 				this.$.titleinput.addEventListener("change",function(){this.setTitle(this.$.titleinput.value)}.bind(this));
+				this.$.bpminput.addEventListener("change",function(){this.setBpm(this.$.bpminput.value)}.bind(this));
 				if(this.autostart!=0){
 					this.autobeats.start();
 					this.playing="1";
