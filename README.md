@@ -83,7 +83,7 @@ destination|object|Sound output node. It will be used in conjunction with audioc
 that register a HTML tag ***&lt;autobeats-player&gt;***.
 
 ### AutoBeats-Player Demo
-[autobeats-player-test.html](autobeats-player-test.html)
+[autobeats-player-test.html](http://g200kg.github.com/AutoBeats/autobeats-player-test.html)
 
 
 ### AutoBeats-Player Usage
