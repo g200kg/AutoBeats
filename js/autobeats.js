@@ -28,8 +28,9 @@ function AutoBeats(title,bpm,audioctx,dest){
 		this.trig=function(t) {
 			for(var i=0;i<3;++i){
 				this.Gain[i].gain.cancelScheduledValues(t);
-				this.Gain[i].gain.setValueAtTime(0,t);
-				this.Gain[i].gain.linearRampToValueAtTime(this.v[i],t+0.005);
+//				this.Gain[i].gain.setValueAtTime(0,t);
+//				this.Gain[i].gain.linearRampToValueAtTime(this.v[i],t+0.005);
+				this.Gain[i].gain.setValueAtTime(this.v[i],t);
 				this.Gain[i].gain.linearRampToValueAtTime(0,t+0.006+this.h*0.075);
 			}
 		};
@@ -90,11 +91,15 @@ function AutoBeats(title,bpm,audioctx,dest){
 		[0, 2, 3, 5, 6, 8, 9,11,12,14,15,17,18,20,21,23]
 	];
 	this.b0=[90,100,120,140,160,180,200,220,240];
+	this.play=function(p){
+		if(p) this.start();
+		else this.stop();
+	}
 	this.start=function(){
-		this.run=1;
+		this.playing=true;
 	};
 	this.stop=function(){
-		this.run=0;
+		this.playing=false;
 		this.o1.mute();
 		this.o2.mute();
 		this.o3.mute();
@@ -137,7 +142,7 @@ function AutoBeats(title,bpm,audioctx,dest){
 	}
 	this.audioctx=audioctx;
 	this.dest=dest;
-	this.run=0;
+	this.playing=false;
 	this.cur=0;
 	this.meas=0;
 	this.beat=0;
@@ -157,7 +162,7 @@ function AutoBeats(title,bpm,audioctx,dest){
 	this.Comp.connect(dest);
 	this.scrproc.onaudioprocess=function(e){
 		var ab=this.ab;
-		if(!ab.ready||!ab.run){
+		if(!ab.ready||!ab.playing){
 			ab.meas=ab.beat=0;
 			ab.cur=ab.audioctx.currentTime;
 			return;

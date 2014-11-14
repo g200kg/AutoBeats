@@ -1,13 +1,19 @@
 AutoBeats
 =========
 
-<b>AutoBeats</b> is a Auto Composer written in JavaScript.
-<b>AutoBeats</b> generates and play music automatically. It just need a song title and optionally BPM.  
-<b>AutoBeats</b> has no file dependencies. You can simply embed to your page. All sounds are generated via Web Audio API.
+***AutoBeats*** is a Auto Composer written in JavaScript.
+***AutoBeats*** generates and play music automatically. It just need a song title and optionally BPM.
+***AutoBeats*** has no file dependencies. You can simply embed to your page. All sounds are generated via Web Audio API.
 
-Chrome is needed.
+### Browser support
+Chrome is required.
 
-## Usage
+### DEMO
+#### [AutoBeats Demo Page with Visualizer](http://g200kg.github.com/AutoBeats/)
+#### [AutoBeats Simple Demo Page](http://g200kg.github.com/AutoBeats/simple.html)
+#### [GLSL Shader Demo with AutoBeats sound](http://g200kg.github.com/AutoBeats/planets.html)
+
+### Usage
 Include 'autobeats.js' in your HTML:
 
 ```
@@ -40,7 +46,7 @@ Combine to your Web Audio App:
 	beats = new AutoBeats("song title", 0, audiocontext, destination);
 ```
 
-## Functions
+### Functions
 
 #### AutoBeats(title,bpm,audioctx,destination)  
  constructor of AutoBeats  
@@ -70,9 +76,54 @@ destination|object|Sound output node. It will be used in conjunction with audioc
 #### AutoBeats.getBpm()  
  Get current Bpm.
 
-## DEMO
-#### [AutoBeats Demo Page with Visualizer](http://g200kg.github.com/AutoBeats/)
-#### [AutoBeats Simple Demo Page](http://g200kg.github.com/AutoBeats/simple.html)
+---
+## WebComponent version 'AutoBeats-Player' is also available
 
+***AutoBeats-Player*** is a WebComponent that encapsulating ***AutoBeats*** function,
+that register a HTML tag ***&lt;autobeats-player&gt;***.
+
+### AutoBeats-Player Demo
+[autobeats-player-test.html](autobeats-player-test.html)
+
+
+### AutoBeats-Player Usage
+
+* Load '[Polymer](js/polymer.min.js)' : &lt;script src="js/polymer.min.js"&gt;&lt;/script&gt;
+* Load '[AutoBeats](js/autobeats.js)' : &lt;script src="js/autobeats.js"&gt;&lt;/script&gt;
+* Import '[AutoBeats-Player](webcomponents/autobeats-player.html)' : &lt;link rel="import" href="webcomponents/autobeats-player.html"&gt;
+* Use 'autobeats-player' tag : &lt;autobeats-player title="TestSong"&gt;&lt;/autobeats-player&gt;
+
+### AutoBeats-Player Tag Attributes
+Attributes	| Description
+---			|---
+title		| Song Title. This string determine the song sequence.
+bpm			| Song BPM. if '0'(default) , automatically decided.
+autostart	| '0' (default) : do nothing, '1' : auto play start</td></tr>
+edittitle	| '0' : disable title edit, '1'(default) : enable title edit</td></tr>
+editbpm		| '0' : disable bpm edit, '1'(default) : enable bpm edit</td></tr>
+
+### Control from JavaScript
+***AutoBeats-Player*** Element has following API:  
+
+Function		| Description
+---				|---
+start()			| Play start
+stop()			| Play stop
+setTitle(title)	| Update song title
+setBpm(bpm)		| Update BPM
+getTitle()		| Get current song title
+getBpm()		| Get current song BPM
+
+For example:  
+HTML:  
+```
+	<autobeats-player id="ab"></autobeats>
+```
+JavaScript:  
+```
+	document.getElementById("ab").setTitle("new song");
+```
+
+---
 ## License
  MIT License

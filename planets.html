@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+<script id="f" type="x/f">precision mediump float;
+uniform float t;
+uniform vec2  r;
+uniform sampler2D wav;
+vec3 hsv(float h,float s,float v){
+	vec4 t=vec4(1.,2./3.,1./3.,3.);
+	vec3 p=abs(fract(vec3(h)+t.xyz)*6.-vec3(t.w));
+	return v*mix(vec3(t.x),clamp(p-vec3(t.x),0.,1.),s);
+}
+float psin(float x){
+	return sin(x)*.5+.5;
+}
+float rnd(vec2 p){
+	return fract(pow(2.+p.y,sin(p.x*.3+1.)+2.2)*4.);
+}
+vec2 orbit(float s,float p,float w,float y) {
+	return vec2(w*cos(t*s+p),w*.3*sin(t*s)+y);
+}
+vec3 planet(vec2 px,vec2 p,float r,float f,vec3 c){
+	vec2 lp=(px-p)/r;
+	float l=1.-length(lp);
+	vec3 p3=vec3(lp,sqrt(1.-lp.x*lp.x-lp.y*lp.y));
+	float z=dot(vec3(-.577,.577,.577),p3);
+	float zz=max(pow(dot(normalize(vec3(-.5,.5,1.)),p3),26.),.0001);
+	if(l>0.){
+		float a=psin(t*.1)*.4;
+		float b=a+(1.-a)*z;
+		c+=vec3(cos(2.3*cos(t/r*.015+p3.z*11.)+1.2*sin(p3.y*3.-p3.x*5.1))*.1
+			,cos(.5*cos(t/r*.08+p3.z*2.1)+1.5*sin(t+p3.z*4.+p3.y*f*sin(p3.z*4.)-p3.x*5.1))*.2
+			,cos(cos(t/r*.31+p3.z*2.1)+sin(lp.y*3.-p3.x*5.1))*.4);
+		c*=b;
+		return c+(1.-c)*zz;
+	}
+	return vec3(0);
+}
+vec3 planet2(vec2 px,vec2 p,float r1,float r2,float f,vec3 c,float th){
+	vec2 p0=px-p, lp1=p0/r1;
+	lp1*=mat2(cos(th),sin(th),-sin(th),cos(th));
+	vec2 lp2=(p0)/r2;
+	float l1=1.-(lp1.x*lp1.x+lp1.y*lp1.y*20.);
+	float l2=1.-length(lp2);
+	if(p0.y>0.&&l2>0.)
+		return planet(px,p,r2,f,c);
+	if(l1>0.&&l1<.6)
+		return c*vec3(psin(l1*22.)*.2+.5,psin(l1*31.)*.4+.5,psin(l1*18.)*.2+.5);
+	if(l2>0.)
+		return planet(px,p,r2,f,c);
+	return vec3(0);
+}
+vec3 pt(int i,vec2 p1,float sr,float f){
+	float r=rnd(p1), vn=r/sr;
+	return hsv(fract(vn*30.)*.7-.1,.2,f*pow((3.-abs(float(i)))*.25,2.)*vn);
+}
+vec3 star(vec2 p,float s,float f){
+	vec2 p0=gl_FragCoord.xy+vec2(floor((t+100.)*s),0);
+	float sr=(psin(t*.1))*.003;
+	for(int i=-2;i<3;++i){
+		vec2 p1=p0+vec2(i,0.);
+		if(rnd(p1)<sr)
+			return pt(i,p1,sr,f);
+	}
+	for(int i=-2;i<3;++i){
+		vec2 p1=p0+vec2(0.,i);
+		if(rnd(p1)<sr)
+			return pt(i,p1,sr,f);
+	}
+	return vec3(0);
+}
+vec3 stars(vec2 p){
+	float s=100.,f=2.;
+	for(int i=0;i<5;++i){
+		vec3 r=star(p,s,f);
+		s*=.9; f*=.95;
+		if(r.x!=0.)
+			return r;
+	}
+	return vec3(0);
+}
+vec3 wave(vec2 p,float v){
+	float l=p.y-v;
+	float r=pow(max(0.,1.-distance(p+vec2(0.,+.5),vec2(p.x,v))),10.0);
+	return vec3(r,r*r,0.);
+}
+void main(void){
+	vec2 p=(gl_FragCoord.xy*2.-r)/r;
+	vec3 c=planet(p,orbit(.08,0.,1.1,-2.6),2.1,11.,vec3(.8,.4,0.));
+	if(c.x==0.){
+		c=planet(p,orbit(.05,3.3,.6,0.),.23,1.,vec3(.3,.3,1.));
+		if(c.x==0.){
+			c=planet2(p,orbit(.082,.5,.9,.35),.2,.08,12.1,vec3(.6,.7,.8),-.2);
+			if(c.x==0.){
+				c=planet(p,orbit(.18,1.3,.7,.6),.06,1.,vec3(1.,.3,.3));
+				if(c.x==0.){
+					c=planet2(p,orbit(.056,0.07,1.5,.5),.09,.04,1.,vec3(.6,.8,.3),.1);
+					if(c.x==0.){
+						vec4 v=texture2D(wav,vec2((p.x+1.)*.5,0.));
+						c=wave(p,v.x);
+						c+=stars(p);
+						float d=pow(psin(t*.54),13.)*pow(fract((cos(t*.1+p.x*sin(t)*4.*v.x)*sin(t)+tan(t*.21+p.y*cos(t)*3.5)*sin(t*.7))*(sin(t*.1)*10.)),(sin(t)+2.)*20.);
+						c+=vec3(0.,d,d);
+					}
+				}
+			}
+		}
+	}
+	gl_FragColor=vec4(c,1.);
+}
+</script>
+<script id="v" type="x/v">
+attribute vec3 p;
+void main(){
+			gl_Position=vec4(p,1.);
+}
+</script>
+<script src="js/autobeats.js"></script>
+<script type="text/javascript">
+window.onload=function(){
+	audioctx=new AudioContext();
+	analyser=audioctx.createAnalyser();
+	analyser.connect(audioctx.destination);
+	beats=new AutoBeats("Planets",0,audioctx,analyser);
+	wavdat=new Uint8Array(256);
+	freqdat=new Uint8Array(256);
+	var elem=function(s){
+		return document.getElementById(s)
+	};
+	beats.start();
+	window.addEventListener('keydown',keydown,1);
+
+	canvas=elem('canvas');
+	gl=canvas.getContext('webgl');
+	prg=gl.createProgram();
+	h=function(i,j){
+		k=gl.createShader(35633-i);
+		gl.shaderSource(k,j);
+		gl.compileShader(k);
+		gl.attachShader(prg,k);
+		return gl.getShaderInfoLog(k);
+	};
+	if(!h(0,elem('v').text)&&!h(1,elem('f').text)){
+		gl.linkProgram(prg);
+	}
+	e=gl.getProgramParameter(prg, 35714);
+	gl.useProgram(prg);
+	u={};
+	u.t=gl.getUniformLocation(prg,'t');
+	u.r=gl.getUniformLocation(prg,'r');
+	u.wav=gl.getUniformLocation(prg,'wav');
+	var texture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1024, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+
+	gl.bindBuffer(34962,gl.createBuffer());
+	gl.bufferData(34962,new Float32Array([-1,1,0,-1,-1,0,1,1,0,1,-1,0]),35044);
+	a=gl.getAttribLocation(prg,'p');
+	gl.enableVertexAttribArray(a);
+	gl.vertexAttribPointer(a,3,5126,0,0,0);
+	gl.clearColor(0,0,0,1);
+	wavcv=document.getElementById("tex");
+	wavctx=wavcv.getContext("2d");
+	wavimgdat=wavctx.createImageData(256,1);
+	z=Date.now();
+	(function(){
+		if(!e) {
+			return;
+		}
+		analyser.getByteTimeDomainData(wavdat);
+//		analyser.getByteFrequencyData(freqdat);
+		for(var i=0;i<256;++i) {
+			var j=i<<2;
+			wavimgdat.data[j]=wavdat[i];
+//			wavimgdat.data[j+1]=freqdat[i];
+			wavimgdat.data[j+3]=255;
+		}
+		wavctx.putImageData(wavimgdat,0,0);
+		canvas.width=x=window.innerWidth;
+		canvas.height=y=window.innerHeight;
+		gl.viewport(0,0,x,y);
+		d=(Date.now()-z)*.001;
+		gl.clear(16384);
+		gl.uniform1f(u.t,d);
+		gl.uniform2fv(u.r,[x,y]);
+		gl.uniform1i(u.wav,0);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, wavimgdat);
+		gl.drawArrays(5,0,4);
+		gl.flush();
+		requestAnimationFrame(arguments.callee);
+	})();
+};
+function keydown(h){
+	e=(h.keyCode!==27);
+}
+function sound(t){
+	console.log(t);
+	if(t)
+		beats.start();
+	else
+		beats.stop();
+}
+</script>
+<style>
+*{
+	margin:0;padding:0;overflow:hidden
+}
+html,body,a{
+	height:100%
+}
+</style>
+<canvas id="canvas" style="position:absolute;top:0px;left:0px">
+</canvas>
+<div style="position:absolute;top:0px;right:0px;color:#ccc;background:rgba(0.5,0.5,0.5,0.5)">
+</div>
+<div style="position:absolute;top:0px;left:0px;color:#dc8;background:rgba(0,0,255,0.4);padding:15px;border-radius:16px"> 
+<h1>Planets</h1>
+<p>WebGL Shader Demo with <a href="https://github.com/g200kg/AutoBeats" style="color:#cd8">AutoBeats</a> auto composer</p><br/>
+<input type="checkbox" id="sound" checked onclick="sound(this.checked)"/> <label for="sound">Sound</label>
+</div>
+<canvas id="tex" style="display:none" id="tex" width="256" height="1"></canvas>
+</body>
+</html>

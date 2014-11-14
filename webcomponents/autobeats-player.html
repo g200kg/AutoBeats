@@ -1,0 +1,100 @@
+<polymer-element name="autobeats-player" attributes="bpm autostart titleedit bpmedit">
+	<template>
+		<div id="ab-body"><span>Title : <input id="titleinput" value="{{title}}" style="width:100px"/> Bpm : <input id="bpminput" value="{{bpm}}" style="width:30px"/> </span><svg id="playbtn" width="16" height="16" viewbox="0 0 32 32"><rect x="1" y="2" width="30" height="28" style="fill:#000"/><rect x="1" y="34" width="30" height="28" style="fill:#000"/><polygon points="11,43 21,43 21,53 11,53" style="fill:#ccc"/><polygon points="9,9 24,16 9,23" style="fill:#ccc"/></svg>
+		</div>
+		<style>
+		#ab-body{
+			display:inline-block;
+			position:relative;
+			background:#666;
+			color:#eee;
+			font-size:10px;
+			font-family:sans-serif;
+			height:26px;
+			line-height:26px;
+			width:240px;
+			border-radius:5px;
+			padding:0px 8px;
+		}
+		input{
+			font-size:10px;
+			margin-right:5px;
+		}
+		svg{
+			position:absolute;
+			top:50%;
+			right:5px;
+			transform:translateY(-50%);
+			border:1px solid #ccc;
+		}
+		</style>
+	</template>
+	<script>
+		Polymer('autobeats-player', (function() {
+			return {
+			title:		"hello AutoBeats", 
+			bpm:		0,
+			autostart:	"0",
+			playing:	"0",
+			audiocontext:	null,
+			destination:	null,
+			autobeats:	null,
+			titleedit: "1",
+			bpmedit: "1",
+			ready: function() {
+				this.autobeats=new AutoBeats(this.title,this.bpm);
+				this.$.playbtn.addEventListener("click",this.play.bind(this));
+				this.$.titleinput.addEventListener("change",function(){this.setTitle(this.$.titleinput.value)}.bind(this));
+				if(this.autostart!=0){
+					this.autobeats.start();
+					this.playing="1";
+				}
+				if(this.titleedit==0)
+					this.$.titleinput.disabled=true;
+				if(this.bpmedit==0)
+					this.$.bpminput.disabled=true;
+				this.bpm=this.$.bpminput.value=this.autobeats.getBpm();
+				this.updatebtn();
+			},
+			updatebtn: function(){
+				this.$.playbtn.viewBox.baseVal.y=this.playing*32;
+			},
+			play: function(){
+				this.playing^=1;
+				if(this.playing)
+					this.autobeats.start();
+				else
+					this.autobeats.stop();
+				this.updatebtn();
+			},
+			start: function(){
+				this.playing=1;
+				this.autobeats.start();
+				this.updatebtn();
+			},
+			stop: function(){
+				this.playing=0;
+				this.autobeats.stop();
+				this.updatebtn();
+			},
+			getTitle: function(){
+				return this.title;
+			},
+			setTitle: function(t){
+				this.title=t;
+				this.$.titleinput.value=t;
+				this.autobeats.setTitle(t);
+				this.bpm=this.$.bpminput.value=this.autobeats.getBpm();
+			},
+			getBpm: function(){
+				return this.bpm;
+			},
+			setBpm: function(b){
+				this.bpm=b;
+				this.$.bpminput.value=b;
+				this.autobeats.setBpm(b);
+			}
+		};
+	})());
+	</script>
+</polymer-element>

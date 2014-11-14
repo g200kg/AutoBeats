@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>[Polymer] AutoBeats Test</title>
+	<script src="js/polymer.min.js"></script>
+	<script src="js/autobeats.js"></script>
+	<link rel="import" href="webcomponents/autobeats-player.html">
+	<style>
+	table{
+		border:1px solid #440;
+	}
+	td{
+		border:1px solid #440;
+	}
+	</style>
+</head>
+<body style="font-size:12px;font-family:Arial,sans-serif;background:#ffe">
+	<h1 style="background:#cc8;padding:5px">[Polymer] AutoBeats-Player Test</h1>
+	<hr/>
+	<b>&lt;autobeats-player title="TestSong"&gt;</b><br/><br/>
+	<autobeats-player id="autobeats" title="TestSong"></autobeats-player>
+	<hr/><br/>
+	<h3>API Test</h3>
+	<div style="background:#cc8;padding:4px">
+	<p><button onclick="document.getElementById('autobeats').start()">AutoBeats.start()</button>
+	<button onclick="document.getElementById('autobeats').stop()">AutoBeats.stop()</button><br/><br/>
+	AutoBeats.setTitle( <input onchange="document.getElementById('autobeats').setTitle(this.value)"/> )<br/>
+	AutoBeats.setBpm( <input onchange="document.getElementById('autobeats').setBpm(this.value)"/> )</p>
+	<button onclick="console.log(document.getElementById('autobeats').getTitle())">console.log(AutoBeats.getTitle())</button>
+	<button onclick="console.log(document.getElementById('autobeats').getBpm())">console.log(AutoBeats.getBpm())</button>
+	</div>
+	<hr/>
+</body>
+</html>
