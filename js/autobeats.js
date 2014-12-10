@@ -160,7 +160,7 @@ function AutoBeats(title,bpm,audioctx,dest){
 	this.delay.connect(this.delayFb);
 	this.delayFb.connect(this.delay);
 	this.Comp.connect(dest);
-	this.scrproc.onaudioprocess=function(e){
+	this.callback=this.scrproc.onaudioprocess=function(e){
 		var ab=this.ab;
 		if(!ab.ready||!ab.playing){
 			ab.meas=ab.beat=0;
@@ -201,4 +201,5 @@ function AutoBeats(title,bpm,audioctx,dest){
 	if(bpm)
 		this.setBpm(bpm);
 	this.ready=true;
+	setInterval(this.callback.bind(this.scrproc),100);
 }
