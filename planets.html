@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 </head>
 <body>
-<script id="f" type="x/f">precision mediump float;
+<script id="fs" type="x/f">precision mediump float;
 uniform float t;
 uniform vec2  r;
 uniform sampler2D wav;
@@ -112,7 +112,7 @@ void main(void){
 	gl_FragColor=vec4(c,1.);
 }
 </script>
-<script id="v" type="x/v">
+<script id="vs" type="x/v">
 attribute vec3 p;
 void main(){
 			gl_Position=vec4(p,1.);
@@ -125,29 +125,27 @@ window.onload=function(){
 	analyser=audioctx.createAnalyser();
 	analyser.connect(audioctx.destination);
 	beats=new AutoBeats("Planets",0,audioctx,analyser);
-	wavdat=new Uint8Array(256);
-	freqdat=new Uint8Array(256);
 	var elem=function(s){
 		return document.getElementById(s)
 	};
 	beats.start();
-	window.addEventListener('keydown',keydown,1);
 
-	canvas=elem('canvas');
+	canvas=document.getElementById("canvas");
 	gl=canvas.getContext('webgl');
 	prg=gl.createProgram();
-	h=function(i,j){
-		k=gl.createShader(35633-i);
-		gl.shaderSource(k,j);
-		gl.compileShader(k);
-		gl.attachShader(prg,k);
-		return gl.getShaderInfoLog(k);
-	};
-	if(!h(0,elem('v').text)&&!h(1,elem('f').text)){
-		gl.linkProgram(prg);
-	}
-	e=gl.getProgramParameter(prg, 35714);
+	var vs=gl.createShader(gl.VERTEX_SHADER);
+	gl.shaderSource(vs, document.getElementById("vs").text);
+	gl.compileShader(vs);
+//	alert(gl.getShaderInfoLog(vs));
+	var fs=gl.createShader(gl.FRAGMENT_SHADER);
+	gl.shaderSource(fs, document.getElementById("fs").text);
+	gl.compileShader(fs);
+//	alert(gl.getShaderInfoLog(fs));
+	gl.attachShader(prg,vs);
+	gl.attachShader(prg,fs);
+	gl.linkProgram(prg);
 	gl.useProgram(prg);
+
 	u={};
 	u.t=gl.getUniformLocation(prg,'t');
 	u.r=gl.getUniformLocation(prg,'r');
@@ -158,47 +156,36 @@ window.onload=function(){
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
-
-	gl.bindBuffer(34962,gl.createBuffer());
-	gl.bufferData(34962,new Float32Array([-1,1,0,-1,-1,0,1,1,0,1,-1,0]),35044);
+	gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());
+	gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,1,0,-1,-1,0,1,1,0,1,-1,0]),gl.STATIC_DRAW);
 	a=gl.getAttribLocation(prg,'p');
 	gl.enableVertexAttribArray(a);
-	gl.vertexAttribPointer(a,3,5126,0,0,0);
+	gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);
 	gl.clearColor(0,0,0,1);
-	wavcv=document.getElementById("tex");
-	wavctx=wavcv.getContext("2d");
-	wavimgdat=wavctx.createImageData(256,1);
 	z=Date.now();
+	wavdat=new Uint8Array(256);
+	wavimgdat=document.createElement("canvas").getContext("2d").createImageData(256,1);
 	(function(){
-		if(!e) {
-			return;
-		}
-		analyser.getByteTimeDomainData(wavdat);
-//		analyser.getByteFrequencyData(freqdat);
-		for(var i=0;i<256;++i) {
-			var j=i<<2;
-			wavimgdat.data[j]=wavdat[i];
-//			wavimgdat.data[j+1]=freqdat[i];
-			wavimgdat.data[j+3]=255;
-		}
-		wavctx.putImageData(wavimgdat,0,0);
 		canvas.width=x=window.innerWidth;
 		canvas.height=y=window.innerHeight;
 		gl.viewport(0,0,x,y);
-		d=(Date.now()-z)*.001;
-		gl.clear(16384);
-		gl.uniform1f(u.t,d);
+		analyser.getByteTimeDomainData(wavdat);
+//		analyser.getByteFrequencyData(wavdat);
+		for(var i=0;i<256;++i) {
+			var j=i<<2;
+			wavimgdat.data[j]=wavdat[i];
+			wavimgdat.data[j+3]=255;
+		}
+		gl.clear(gl.COLOR_BUFFER_BIT);
+		gl.uniform1f(u.t,(Date.now()-z)*0.001);
 		gl.uniform2fv(u.r,[x,y]);
 		gl.uniform1i(u.wav,0);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, wavimgdat);
-		gl.drawArrays(5,0,4);
+		gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 		gl.flush();
 		requestAnimationFrame(arguments.callee);
 	})();
 };
-function keydown(h){
-	e=(h.keyCode!==27);
-}
 function sound(t){
 	console.log(t);
 	if(t)
